@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">PoseCamera</string>
+    <string name="select_reference_image">选择参考图片</string>
+    <string name="open_camera">打开相机</string>
+    <string name="tap_to_select_reference">请先选择一张参考图片</string>
+    <string name="reference_image_preview">参考图片预览</string>
+    <string name="reference_overlay">参考图片遮罩</string>
+    <string name="opacity">透明度</string>
+    <string name="toggle_animation">切换动画</string>
+    <string name="take_photo">拍照</string>
+    <string name="switch_camera">切换摄像头</string>
+    <string name="auto_edit">自动修图</string>
+    <string name="captured_photo">拍摄的照片</string>
+    <string name="edited_photo">修图后的照片</string>
+    <string name="reference">参考</string>
+    <string name="reference_thumbnail">参考图缩略图</string>
+    <string name="original">原图</string>
+    <string name="styled">风格</string>
+    <string name="apply_style">应用风格</string>
+    <string name="save_photo">保存照片</string>
+    <string name="permission_required">需要相机和存储权限</string>
+    <string name="permission_denied">权限被拒绝，无法使用该功能</string>
+    <string name="photo_saved">照片已保存</string>
+    <string name="photo_save_failed">保存失败</string>
+    <string name="processing">处理中…</string>
+    <string name="style_applied">风格已应用</string>
+</resources>
