@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/ivReferencePreview"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/reference_image_preview"
+        android:background="@drawable/bg_image_placeholder"
+        android:src="@drawable/ic_add_photo" />
+
+    <TextView
+        android:id="@+id/tvHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/tap_to_select_reference"
+        android:textSize="14sp"
+        android:textColor="@color/text_secondary" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/select_reference_image"
+        app:cornerRadius="8dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnOpenCamera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/open_camera"
+        android:enabled="false"
+        app:cornerRadius="8dp"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+</LinearLayout>
