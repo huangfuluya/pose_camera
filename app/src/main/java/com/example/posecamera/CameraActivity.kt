@@ -1,14 +1,11 @@
 package com.example.posecamera
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -25,15 +22,14 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 /**
- * CameraActivity – shows a live camera preview with a reference image that slowly
- * fades in and out as an overlay.  When the user captures a photo the result is
- * forwarded to PhotoEditActivity.
+ * CameraActivity – shows a live camera preview with a reference image overlay
+ * whose opacity is controlled in real-time by a seekbar.  When the user captures
+ * a photo the result is forwarded to PhotoEditActivity.
  */
 class CameraActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_REFERENCE_URI = "extra_reference_uri"
-        private const val FADE_DURATION_MS = 2000L
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 
@@ -42,10 +38,6 @@ class CameraActivity : AppCompatActivity() {
 
     private var imageCapture: ImageCapture? = null
     private var lensFacing = CameraSelector.LENS_FACING_BACK
-    private var isAnimationRunning = true
-
-    // Looping alpha animator
-    private var fadeAnimator: AnimatorSet? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +54,9 @@ class CameraActivity : AppCompatActivity() {
 
         startCamera()
         setupControls()
-        startFadeAnimation()
+
+        // Apply the default seekbar alpha immediately
+        binding.ivReferenceOverlay.alpha = binding.seekBarAlpha.progress / 100f
     }
 
     // ---- Camera setup ----
@@ -93,48 +87,6 @@ class CameraActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    // ---- Reference overlay animation ----
-
-    private fun startFadeAnimation() {
-        fadeAnimator?.cancel()
-
-        val maxAlpha = binding.seekBarAlpha.progress / 100f
-
-        // Fade in then fade out, loop
-        val fadeIn = ObjectAnimator.ofFloat(binding.ivReferenceOverlay, "alpha", 0f, maxAlpha).apply {
-            duration = FADE_DURATION_MS
-            interpolator = AccelerateDecelerateInterpolator()
-        }
-        val fadeOut = ObjectAnimator.ofFloat(binding.ivReferenceOverlay, "alpha", maxAlpha, 0f).apply {
-            duration = FADE_DURATION_MS
-            interpolator = AccelerateDecelerateInterpolator()
-        }
-
-        fadeAnimator = AnimatorSet().apply {
-            playSequentially(fadeIn, fadeOut)
-            addListener(object : android.animation.AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: android.animation.Animator) {
-                    if (isAnimationRunning) {
-                        startFadeAnimation() // loop
-                    }
-                }
-            })
-            start()
-        }
-    }
-
-    private fun pauseFadeAnimation() {
-        fadeAnimator?.pause()
-    }
-
-    private fun resumeFadeAnimation() {
-        if (fadeAnimator?.isPaused == true) {
-            fadeAnimator?.resume()
-        } else {
-            startFadeAnimation()
-        }
-    }
-
     // ---- Controls ----
 
     private fun setupControls() {
@@ -150,29 +102,14 @@ class CameraActivity : AppCompatActivity() {
             startCamera()
         }
 
-        // Toggle animation play/pause
-        binding.btnToggleAnimation.setOnClickListener {
-            isAnimationRunning = !isAnimationRunning
-            if (isAnimationRunning) {
-                resumeFadeAnimation()
-            } else {
-                pauseFadeAnimation()
-            }
-        }
-
-        // Alpha seekbar – adjust maximum overlay opacity
+        // Alpha seekbar – directly controls overlay opacity in real-time
         binding.seekBarAlpha.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 binding.tvAlphaValue.text = "$progress%"
-                // Update current overlay alpha to the seekbar value (don't restart animation)
-                val currentAlpha = binding.ivReferenceOverlay.alpha
-                binding.ivReferenceOverlay.alpha = currentAlpha.coerceAtMost(progress / 100f)
+                binding.ivReferenceOverlay.alpha = progress / 100f
             }
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                // Restart animation with new max alpha
-                if (isAnimationRunning) startFadeAnimation()
-            }
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
         })
     }
 
@@ -217,7 +154,6 @@ class CameraActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        fadeAnimator?.cancel()
         cameraExecutor.shutdown()
     }
 }

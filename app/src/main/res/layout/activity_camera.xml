@@ -18,13 +18,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Reference image overlay (fades in/out) -->
+    <!-- Reference image overlay (opacity controlled by seekbar) -->
     <ImageView
         android:id="@+id/ivReferenceOverlay"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
-        android:alpha="0.0"
+        android:alpha="0.5"
         android:contentDescription="@string/reference_overlay"
         app:layout_constraintTop_toTopOf="@id/cameraPreview"
         app:layout_constraintBottom_toBottomOf="@id/cameraPreview"
@@ -83,17 +83,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Toggle animation button -->
-        <ImageButton
-            android:id="@+id/btnToggleAnimation"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginEnd="32dp"
-            android:src="@drawable/ic_play_pause"
-            android:background="@drawable/bg_circle_button"
-            android:contentDescription="@string/toggle_animation"
-            android:tint="@android:color/white" />
 
         <!-- Capture button -->
         <ImageButton
